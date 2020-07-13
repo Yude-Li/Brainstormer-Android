@@ -16,36 +16,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-public class PostTaskJson<T extends ApiJsonForm> extends AsyncTask<T, Void, ResponseEntity<T>> {
+public class PostTaskJson<T extends ApiJsonForm, E> extends AsyncTask<T, Void, ResponseEntity<E>> {
 
-    private final Class<T> tClass;
-    private ApiCallback apiCallback;
+    private final Class<E> eClass;
+    private ApiCallback<E> apiCallback;
 
-    public PostTaskJson(Class<T> tClass, ApiCallback apiCallback) {
-        this.tClass = tClass;
+    public PostTaskJson(Class<E> eClass, ApiCallback<E> apiCallback) {
+        this.eClass = eClass;
         this.apiCallback = apiCallback;
     }
 
     @Override
-    protected ResponseEntity<T> doInBackground(T... ts) {
+    protected ResponseEntity<E> doInBackground(T... ts) {
         final String url = ts[0].getURL();
         JSONObject jsonObject = ts[0].getJson();
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<String> httpEntity = new HttpEntity<>(jsonObject.toString(), httpHeaders);
+        HttpEntity<String> httpEntity;
 
+        if (jsonObject != null) {
+            httpEntity = new HttpEntity<>(jsonObject.toString(), httpHeaders);
+        }
+        else {
+            httpEntity = new HttpEntity<>("", httpHeaders);
+        }
         try {
             RestTemplate restTemplate = new RestTemplate(true);
-            return restTemplate.exchange(url, HttpMethod.POST, httpEntity, tClass);
+            return restTemplate.exchange(url, HttpMethod.POST, httpEntity, eClass);
         } catch (RestClientException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
-    protected void onPostExecute(ResponseEntity<T> responseEntity) {
+    protected void onPostExecute(ResponseEntity<E> responseEntity) {
         apiCallback.postResult(responseEntity);
     }
 }

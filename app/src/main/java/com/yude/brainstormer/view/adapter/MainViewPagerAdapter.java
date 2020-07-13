@@ -1,4 +1,4 @@
-package com.yude.brainstormer.view.pager;
+package com.yude.brainstormer.view.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -6,11 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.yude.brainstormer.HomeActivity;
 import com.yude.brainstormer.MainActivity;
-import com.yude.brainstormer.view.fragment.BrainProfileFragment;
-import com.yude.brainstormer.view.fragment.FollowFragment;
-import com.yude.brainstormer.view.fragment.IdeasFragment;
 import com.yude.brainstormer.view.fragment.LoginFragment;
 import com.yude.brainstormer.view.fragment.RegisterFragment;
 

@@ -16,6 +16,9 @@ import android.widget.Toast;
 
 import com.yude.brainstormer.R;
 import com.yude.brainstormer.callback.api.ApiCallback;
+import com.yude.brainstormer.dao.DaoFactory;
+import com.yude.brainstormer.dao.DataDao;
+import com.yude.brainstormer.model.Brain;
 import com.yude.brainstormer.model.form.LoginBrainForm;
 import com.yude.brainstormer.model.form.RegisterBrainForm;
 import com.yude.brainstormer.rest.PostTaskJson;
@@ -24,13 +27,14 @@ import com.yude.brainstormer.view.callback.LoginCallback;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class LoginFragment extends Fragment implements ApiCallback<LoginBrainForm>  {
+public class LoginFragment extends Fragment implements ApiCallback<Brain>  {
 
     private EditText emailET;
     private EditText pwdET;
 
     private LoginCallback callback;
     private Context context;
+    private DataDao dao;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -41,13 +45,14 @@ public class LoginFragment extends Fragment implements ApiCallback<LoginBrainFor
 //        this.callback = callback;
 //    }
     private LoginFragment getFragment() {
-    return this;
-}
+        return this;
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+        dao = DaoFactory.getDataDao();
         callback = (LoginCallback) context;
     }
 
@@ -70,15 +75,18 @@ public class LoginFragment extends Fragment implements ApiCallback<LoginBrainFor
         emailET = view.findViewById(R.id.editText_login_email);
         pwdET = view.findViewById(R.id.editText_login_pwd);
 
+        emailET.setText("yude@gmail.com");
+        pwdET.setText("1234");
+
         Button signinBtn = view.findViewById(R.id.button_login_signIn);
         signinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginBrainForm registerBrainForm = new LoginBrainForm();
-                registerBrainForm.setEmail(emailET.getText().toString());
-                registerBrainForm.setPassword(pwdET.getText().toString());
+                LoginBrainForm loginBrainForm = new LoginBrainForm();
+                loginBrainForm.setEmail(emailET.getText().toString());
+                loginBrainForm.setPassword(pwdET.getText().toString());
 
-                new PostTaskJson<>(LoginBrainForm.class, getFragment()).execute(registerBrainForm);
+                new PostTaskJson<LoginBrainForm, Brain>(Brain.class, getFragment()).execute(loginBrainForm);
             }
         });
 
@@ -93,18 +101,24 @@ public class LoginFragment extends Fragment implements ApiCallback<LoginBrainFor
     }
 
     @Override
-    public void getResult(HttpStatus httpStatus, Object data) {
-
-    }
-
-    @Override
-    public void postResult(ResponseEntity<LoginBrainForm> responseEntity) {
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+    public void postResult(ResponseEntity<Brain> responseEntity) {
+        if (responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody().getUsername() != null) {
             Toast.makeText(
                     this.getContext(),
                     responseEntity.getBody().getUsername() + " Login successfully",
                     Toast.LENGTH_LONG
             ).show();
+
+//            Brain brain = new Brain();
+//            brain.setId(responseEntity.getBody().getId());
+//            brain.setEmail(responseEntity.getBody().getEmail());
+//            brain.setUsername(responseEntity.getBody().getUsername());
+//            brain.setPassword(responseEntity.getBody().getPassword());
+//            brain.setFirstName(responseEntity.getBody().getFirstName());
+//            brain.setLastName(responseEntity.getBody().getLastName());
+//            brain.setFollows(responseEntity.getBody().getFollows());
+
+            dao.setCurrentBrain(responseEntity.getBody());
             callback.signInResultCallback();
         }
         else {

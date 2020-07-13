@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.yude.brainstormer.callback.api.ApiCallbackGet;
+import com.yude.brainstormer.model.Brain;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.List;
 
 public class GetTaskJson<T> extends AsyncTask<String, Void, ResponseEntity<T>> {
 

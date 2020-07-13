@@ -1,4 +1,4 @@
-package com.yude.brainstormer.view.pager;
+package com.yude.brainstormer.view.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,9 +26,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         this.homeActivity = new WeakReference<>(homeActivity);
 
         fragments.add(new IdeasFragment());
-        fragments.add(new BrainProfileFragment());
-        fragments.add(new FollowFragment());
 
+        fragments.add(new FollowFragment());
+        fragments.add(new BrainProfileFragment());
+        fragments.add(new BrainProfileFragment());
     }
 
     @NonNull
@@ -47,7 +48,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 1;
+        return 3;
     }
 
     @Nullable
@@ -55,11 +56,11 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Register";
+                return "Ideas";
             case 1:
-                return "Auth";
+                return "Brains";
             case 2:
-                return "Client";
+                return "Profile";
             default:
                 return "NA";
         }

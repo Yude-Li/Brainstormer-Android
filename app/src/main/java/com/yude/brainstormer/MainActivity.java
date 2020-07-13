@@ -6,13 +6,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
-import com.google.android.material.tabs.TabLayout;
 import com.yude.brainstormer.view.callback.LoginCallback;
-import com.yude.brainstormer.view.pager.MainViewPagerAdapter;
-import com.yude.brainstormer.view.pager.ViewPagerAdapter;
+import com.yude.brainstormer.view.adapter.MainViewPagerAdapter;
 
 public class MainActivity extends AppCompatActivity implements LoginCallback {
 

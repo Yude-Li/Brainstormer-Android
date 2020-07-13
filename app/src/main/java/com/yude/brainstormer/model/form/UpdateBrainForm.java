@@ -1,27 +1,16 @@
-package com.yude.brainstormer.model;
+package com.yude.brainstormer.model.form;
 
-import java.util.List;
+import com.yude.brainstormer.callback.api.ApiJsonForm;
 
-public class Brain {
+import org.json.JSONObject;
 
-    private long id;
+public class UpdateBrainForm implements ApiJsonForm {
+
     private String email;
     private String username;
     private String password;
     private String firstName;
     private String lastName;
-    private List<Brain> follows;
-
-    public Brain() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getEmail() {
         return email;
@@ -63,19 +52,28 @@ public class Brain {
         this.lastName = lastName;
     }
 
-    public List<Brain> getFollows() {
-        return follows;
+    @Override
+    public JSONObject getJson() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", getEmail());
+            jsonObject.put("username", getUsername());
+            jsonObject.put("password", getPassword());
+            jsonObject.put("firstName", getFirstName());
+            jsonObject.put("lastName", getLastName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
     }
 
-    public void setFollows(List<Brain> follows) {
-        this.follows = follows;
+    @Override
+    public String getURL() {
+        return "http://10.0.2.2:8080/brain/update";
     }
 
-    public void addFollows(Brain newFollow) {
-        this.follows.add(newFollow);
-    }
-
-    public void delFollows(Brain newFollow) {
-        this.follows.remove(newFollow);
+    @Override
+    public String getResult() {
+        return null;
     }
 }

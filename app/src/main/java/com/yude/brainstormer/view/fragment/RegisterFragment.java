@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.yude.brainstormer.R;
 import com.yude.brainstormer.callback.api.ApiCallback;
+import com.yude.brainstormer.model.Brain;
 import com.yude.brainstormer.model.form.RegisterBrainForm;
 import com.yude.brainstormer.rest.PostTaskJson;
 import com.yude.brainstormer.view.callback.LoginCallback;
@@ -23,7 +24,7 @@ import com.yude.brainstormer.view.callback.LoginCallback;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-public class RegisterFragment extends Fragment implements ApiCallback<RegisterBrainForm> {
+public class RegisterFragment extends Fragment implements ApiCallback<Brain> {
 
     private EditText emailET;
     private EditText usernameET;
@@ -81,18 +82,13 @@ public class RegisterFragment extends Fragment implements ApiCallback<RegisterBr
                 registerBrainForm.setFirstName(firstNameET.getText().toString());
                 registerBrainForm.setLastName(lastNameET.getText().toString());
 
-                new PostTaskJson<>(RegisterBrainForm.class, getFragment()).execute(registerBrainForm);
+                new PostTaskJson<RegisterBrainForm, Brain>(Brain.class, getFragment()).execute(registerBrainForm);
             }
         });
     }
 
     @Override
-    public void getResult(HttpStatus httpStatus, Object data) {
-
-    }
-
-    @Override
-    public void postResult(ResponseEntity<RegisterBrainForm> responseEntity) {
+    public void postResult(ResponseEntity<Brain> responseEntity) {
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             Toast.makeText(
                     this.getContext(),
