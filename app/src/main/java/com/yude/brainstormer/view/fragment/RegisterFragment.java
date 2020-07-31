@@ -105,23 +105,4 @@ public class RegisterFragment extends Fragment implements ApiCallback<Brain> {
             ).show();
         }
     }
-
-//    @Override
-//    public void postResult(HttpStatus httpStatus, String result) {
-//        if (httpStatus == HttpStatus.OK) {
-//            Toast.makeText(
-//                    this.getContext(),
-//                    result + " Register successfully",
-//                    Toast.LENGTH_LONG
-//            ).show();
-//            callback.registerResultCallback();
-//        }
-//        else {
-//            Toast.makeText(
-//                    this.getContext(),
-//                    result + " Register fail",
-//                    Toast.LENGTH_LONG
-//            ).show();
-//        }
-//    }
 }

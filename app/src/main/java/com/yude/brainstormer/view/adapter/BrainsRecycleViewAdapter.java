@@ -19,7 +19,7 @@ import com.yude.brainstormer.view.callback.IdeaRowOnClickCallback;
 
 import java.util.List;
 
-public class BrainsRecycleViewAdapter  extends RecyclerView.Adapter<BrainsRecycleViewAdapter.ViewHolder> {
+public class BrainsRecycleViewAdapter extends RecyclerView.Adapter<BrainsRecycleViewAdapter.ViewHolder> {
 
     private List<Brain> brainList = null;
     private Brain currentBrain = null;

@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_follow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.fragment.BrainToFollowFragment">
+    tools:context=".view.fragment.MyBrainFriendsFragment">
 
     <EditText
-        android:id="@+id/editText_follow_search"
+        android:id="@+id/editText_brainFriends_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -20,8 +18,9 @@
         android:inputType="textPersonName" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycleView_follow"
+        android:id="@+id/recycleView_brainFriends"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp" />
+
 </LinearLayout>

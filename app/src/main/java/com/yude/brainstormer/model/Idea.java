@@ -6,6 +6,7 @@ public class Idea {
     private String context;
     private String content;
     private Brain author;
+    private Idea originalIdea;
 
     public Idea() {
     }
@@ -54,5 +55,13 @@ public class Idea {
 
     public void setAuthor(Brain author) {
         this.author = author;
+    }
+
+    public Idea getOriginalIdea() {
+        return originalIdea;
+    }
+
+    public void setOriginalIdea(Idea originalIdea) {
+        this.originalIdea = originalIdea;
     }
 }

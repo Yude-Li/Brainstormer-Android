@@ -11,6 +11,7 @@ public class Brain {
     private String firstName;
     private String lastName;
     private List<Brain> follows;
+//    private List<Idea> ideas;
 
     public Brain() {
     }
@@ -78,4 +79,20 @@ public class Brain {
     public void delFollows(Brain newFollow) {
         this.follows.remove(newFollow);
     }
+
+//    public List<Idea> getIdeas() {
+//        return ideas;
+//    }
+//
+//    public void setIdeas(List<Idea> ideas) {
+//        this.ideas = ideas;
+//    }
+//
+//    public void addIdeas(Idea newIdeas) {
+//        this.ideas.add(newIdeas);
+//    }
+//
+//    public void delIdeas(Idea newIdeas) {
+//        this.ideas.remove(newIdeas);
+//    }
 }

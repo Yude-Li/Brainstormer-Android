@@ -40,10 +40,6 @@ public class LoginFragment extends Fragment implements ApiCallback<Brain>  {
         // Required empty public constructor
     }
 
-//    public LoginFragment(LoginCallback callback) {
-//        // Required empty public constructor
-//        this.callback = callback;
-//    }
     private LoginFragment getFragment() {
         return this;
     }
@@ -75,9 +71,6 @@ public class LoginFragment extends Fragment implements ApiCallback<Brain>  {
         emailET = view.findViewById(R.id.editText_login_email);
         pwdET = view.findViewById(R.id.editText_login_pwd);
 
-        emailET.setText("yude@gmail.com");
-        pwdET.setText("1234");
-
         Button signinBtn = view.findViewById(R.id.button_login_signIn);
         signinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,9 +90,9 @@ public class LoginFragment extends Fragment implements ApiCallback<Brain>  {
                 callback.signUpBtnOnClickCallback();
             }
         });
-
     }
 
+    // region Interface callback
     @Override
     public void postResult(ResponseEntity<Brain> responseEntity) {
         if (responseEntity.getStatusCode() == HttpStatus.OK && responseEntity.getBody().getUsername() != null) {
@@ -108,15 +101,6 @@ public class LoginFragment extends Fragment implements ApiCallback<Brain>  {
                     responseEntity.getBody().getUsername() + " Login successfully",
                     Toast.LENGTH_LONG
             ).show();
-
-//            Brain brain = new Brain();
-//            brain.setId(responseEntity.getBody().getId());
-//            brain.setEmail(responseEntity.getBody().getEmail());
-//            brain.setUsername(responseEntity.getBody().getUsername());
-//            brain.setPassword(responseEntity.getBody().getPassword());
-//            brain.setFirstName(responseEntity.getBody().getFirstName());
-//            brain.setLastName(responseEntity.getBody().getLastName());
-//            brain.setFollows(responseEntity.getBody().getFollows());
 
             dao.setCurrentBrain(responseEntity.getBody());
             callback.signInResultCallback();
@@ -129,4 +113,5 @@ public class LoginFragment extends Fragment implements ApiCallback<Brain>  {
             ).show();
         }
     }
+    // endregion
 }

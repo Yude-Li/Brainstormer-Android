@@ -1,4 +1,4 @@
-package com.yude.brainstormer;
+package com.yude.brainstormer.callback.api;
 
 import org.springframework.http.ResponseEntity;
 

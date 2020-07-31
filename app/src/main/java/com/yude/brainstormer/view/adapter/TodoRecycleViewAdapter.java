@@ -5,23 +5,24 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.yude.brainstormer.R;
 import com.yude.brainstormer.model.Idea;
-import com.yude.brainstormer.view.callback.IdeaRowOnClickCallback;
+import com.yude.brainstormer.view.callback.TodoActionCallback;
 
 import java.util.List;
 
-public class IdeaRecycleViewAdapter extends RecyclerView.Adapter<IdeaRecycleViewAdapter.ViewHolder> {
-
+public class TodoRecycleViewAdapter extends RecyclerView.Adapter<TodoRecycleViewAdapter.ViewHolder> {
     private List<Idea> ideaList = null;
     private Context context;
-    private final IdeaRowOnClickCallback listener;
+    private final TodoActionCallback listener;
 
-    public IdeaRecycleViewAdapter(List<Idea> ideaList, Context context, IdeaRowOnClickCallback listener) {
+    public TodoRecycleViewAdapter(List<Idea> ideaList, Context context, TodoActionCallback listener) {
         this.ideaList = ideaList;
         this.context = context;
         this.listener = listener;
@@ -35,31 +36,29 @@ public class IdeaRecycleViewAdapter extends RecyclerView.Adapter<IdeaRecycleView
 
         public ViewHolder(View itemView) {
             super(itemView);
-            rowTitleTV = itemView.findViewById(R.id.textView_ideaRow_title);
-            rowAuthTV = itemView.findViewById(R.id.textView_ideaRow_author);
-            rowContextTV = itemView.findViewById(R.id.textView_ideaRow_context);
-            rowContentTV = itemView.findViewById(R.id.textView_ideaRow_content);
+            rowTitleTV = itemView.findViewById(R.id.textView_todoRow_title);
+            rowAuthTV = itemView.findViewById(R.id.textView_todoRow_author);
+            rowContextTV = itemView.findViewById(R.id.textView_todoRow_context);
+            rowContentTV = itemView.findViewById(R.id.textView_todoRow_content);
         }
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View contactView;
 
-        contactView = inflater.inflate(R.layout.row_idea, parent, false);
+        contactView = inflater.inflate(R.layout.row_todo, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
+        TodoRecycleViewAdapter.ViewHolder viewHolder = new TodoRecycleViewAdapter.ViewHolder(contactView);
         return viewHolder;
     }
 
-    // Involves populating data into the item through holder
     @Override
-    public void onBindViewHolder(final IdeaRecycleViewAdapter.ViewHolder viewHolder, final int position) {
-
+    public void onBindViewHolder(final TodoRecycleViewAdapter.ViewHolder viewHolder, int position) {
         Idea idea = ideaList.get(position);
 
         TextView rowTitleTV = viewHolder.rowTitleTV;
@@ -77,13 +76,19 @@ public class IdeaRecycleViewAdapter extends RecyclerView.Adapter<IdeaRecycleView
             rowContextTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.contextOnClick(idea.getOriginalIdea());
+                    listener.showOriginalIdeaDialog(idea.getOriginalIdea());
                 }
             });
         }
+
+        rowContentTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.showOriginalIdeaDialog(idea);
+            }
+        });
     }
 
-    // Returns the total count of items in the list
     @Override
     public int getItemCount() {
         return ideaList.size();

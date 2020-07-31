@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class FollowFragment extends Fragment implements ApiCallback<Brain>, ApiCallbackGet<String> {
+public class BrainToFollowFragment extends Fragment implements ApiCallback<Brain>, ApiCallbackGet<String> {
 
     private RecyclerView recyclerView;
     private EditText searchBar;
@@ -55,11 +55,11 @@ public class FollowFragment extends Fragment implements ApiCallback<Brain>, ApiC
     private List<Brain> brainList;
     private List<Brain> searchBrainList;
 
-    public FollowFragment() {
+    public BrainToFollowFragment() {
         // Required empty public constructor
     }
 
-    private FollowFragment getFragment() {
+    private BrainToFollowFragment getFragment() {
         return this;
     }
 
@@ -73,7 +73,6 @@ public class FollowFragment extends Fragment implements ApiCallback<Brain>, ApiC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override

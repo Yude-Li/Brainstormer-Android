@@ -31,12 +31,6 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
     @NonNull
     @Override
     public Fragment getItem(int position) {
-//        switch (position) {
-//            case 0:
-//            case 1:
-//            default:
-//                return new Fragment();
-//        }
         return fragments.get(position);
     }
 

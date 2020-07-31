@@ -1,12 +1,13 @@
 package com.yude.brainstormer.view.fragment;
 
 import android.content.Context;
-import android.graphics.Rect;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -17,25 +18,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.yude.brainstormer.ApiCallbackPost;
 import com.yude.brainstormer.R;
 import com.yude.brainstormer.callback.api.ApiCallback;
 import com.yude.brainstormer.callback.api.ApiCallbackGet;
 import com.yude.brainstormer.dao.DaoFactory;
 import com.yude.brainstormer.model.Brain;
 import com.yude.brainstormer.model.Idea;
-import com.yude.brainstormer.model.form.IdeaBrainForm;
+import com.yude.brainstormer.model.form.AssignIdeaToBrainForm;
+import com.yude.brainstormer.model.form.CiteForm;
+import com.yude.brainstormer.model.form.CurrentBrainIdeasForm;
+import com.yude.brainstormer.model.form.IdeaDeleteForm;
 import com.yude.brainstormer.model.form.IdeaForm;
 import com.yude.brainstormer.rest.GetTaskJson;
 import com.yude.brainstormer.rest.PostTaskJson;
-import com.yude.brainstormer.view.adapter.IdeaRecycleViewAdapter;
+import com.yude.brainstormer.view.adapter.IdeaAllRecycleViewAdapter;
 import com.yude.brainstormer.view.adapter.MyDividerItemDecoration;
+import com.yude.brainstormer.view.callback.IdeaCiteCallback;
 import com.yude.brainstormer.view.callback.IdeaRowOnClickCallback;
 import com.yude.brainstormer.view.callback.NewIdeaListener;
 
@@ -45,16 +48,17 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IdeasFragment extends Fragment implements NewIdeaListener, ApiCallback<Idea>, ApiCallbackGet<String> {
+public class IdeasFragment extends Fragment implements NewIdeaListener, IdeaCiteCallback, ApiCallback<String>, ApiCallbackGet<String> {
 
     private Context context;
     private NewIdeaDialog newIdeaDialog;
     private RecyclerView recyclerView;
-    private IdeaRecycleViewAdapter adapter;
+    private IdeaAllRecycleViewAdapter adapter;
     private List<Idea> ideaList;
     private List<Idea> searchIdeaList;
 
-    private boolean isAssignToBrain = false;
+//    private boolean isAssignToBrain = false;
+    private int citeIdeaPosition = -1;
 
     public IdeasFragment() {
         // Required empty public constructor
@@ -73,7 +77,6 @@ public class IdeasFragment extends Fragment implements NewIdeaListener, ApiCallb
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -102,8 +105,8 @@ public class IdeasFragment extends Fragment implements NewIdeaListener, ApiCallb
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isAssignToBrain = false;
-                newIdeaDialog.show(getFragmentManager(), "COUNTRY_PICKER");
+//                isAssignToBrain = false;
+                newIdeaDialog.show(getFragmentManager(), "");
             }
         });
     }
@@ -111,58 +114,65 @@ public class IdeasFragment extends Fragment implements NewIdeaListener, ApiCallb
     private void initialListView() {
         ideaList = new ArrayList<>();
         searchIdeaList = new ArrayList<>();
-        adapter = new IdeaRecycleViewAdapter(searchIdeaList, context, new IdeaRowOnClickCallback() {
+        adapter = new IdeaAllRecycleViewAdapter(searchIdeaList, context, new IdeaRowOnClickCallback() {
+            @Override
+            public void citeBtnOnClick(int position) {
+                citeIdeaPosition = position;
+//                isAssignToBrain = false;
+                CiteIdeaDialog citeIdeaDialog = CiteIdeaDialog.newInstance(searchIdeaList.get(position).getTitle(), context);
+                citeIdeaDialog.setListener(getFragment());
+                citeIdeaDialog.show(getFragmentManager(), "");
+            }
 
+            @Override
+            public void contextOnClick(Idea idea) {
+                IdeaSimpleDialog ideaSimpleDialog = IdeaSimpleDialog.newInstance(idea, context);
+                ideaSimpleDialog.show(getFragmentManager(), "");
+            }
         });
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         Drawable dividerDrawable = ContextCompat.getDrawable(context, R.drawable.recycle_divider);
         recyclerView.addItemDecoration(new MyDividerItemDecoration(context, dividerDrawable));
-        recyclerViewOnTouchListener();
     }
 
-    public void recyclerViewOnTouchListener() {
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                int position = viewHolder.getAdapterPosition();
-            }
-        });
-
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-    }
-
+    // region Dialog callback
     @Override
     public void newIdeaInfo(String title, String context, String content) {
         // Call api to add new post
         Brain brain = DaoFactory.getDataDao().getCurrentBrain();
         IdeaForm ideaForm = new IdeaForm(brain.getUsername(), title, context, content);
-        new PostTaskJson<IdeaForm, Idea>(Idea.class, getFragment()).execute(ideaForm);
+        new PostTaskJson<IdeaForm, String>(String.class, getFragment()).execute(ideaForm);
     }
 
     @Override
-    public void postResult(ResponseEntity<Idea> responseEntity) {
+    public void dialogCiteBtnOnClick(String title, String context, String content) {
+        Idea idea = searchIdeaList.get(citeIdeaPosition);
+
+        CiteForm citeForm = new CiteForm();
+        citeForm.setCiteIdeaId(idea.getId());
+        citeForm.setCiteUsername(DaoFactory.getDataDao().getCurrentBrain().getUsername());
+        citeForm.setCiteTitle(title);
+        citeForm.setCiteContext(context);
+        citeForm.setCiteContent(content);
+        citeForm.setCiting(true);
+        new PostTaskJson<CiteForm, String>(String.class, getFragment()).execute(citeForm);
+    }
+    // endregion
+
+    // region Api Callback
+    @Override
+    public void postResult(ResponseEntity<String> responseEntity) {
         // Result after post, is success, call get
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            if (!isAssignToBrain) {
-                Toast.makeText(
-                        this.getContext(),
-                        responseEntity.getBody().getTitle() + " Post successfully",
-                        Toast.LENGTH_LONG
-                ).show();
+            Toast.makeText(
+                    this.getContext(),
+                    "Post successfully",
+                    Toast.LENGTH_LONG
+            ).show();
 
-                IdeaBrainForm ideaForm = new IdeaBrainForm(responseEntity.getBody().getId(), responseEntity.getBody().getAuthor().getUsername());
-                new PostTaskJson<IdeaBrainForm, Idea>(Idea.class, getFragment()).execute(ideaForm);
-                isAssignToBrain = true;
-
-                String request = "http://10.0.2.2:8080/ideas";
-                new GetTaskJson<String>(String.class, getFragment()).execute(request);
-            }
+            String request = "http://10.0.2.2:8080/ideas";
+            new GetTaskJson<String>(String.class, getFragment()).execute(request);
         }
         else {
             Toast.makeText(
@@ -192,6 +202,7 @@ public class IdeasFragment extends Fragment implements NewIdeaListener, ApiCallb
             ).show();
         }
     }
+    // endregion
 
     private void parseStringToIdeaList(String input) {
         ideaList.clear();

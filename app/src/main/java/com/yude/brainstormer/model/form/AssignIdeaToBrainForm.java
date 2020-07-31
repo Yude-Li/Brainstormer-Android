@@ -4,12 +4,11 @@ import com.yude.brainstormer.callback.api.ApiJsonForm;
 
 import org.json.JSONObject;
 
-public class IdeaBrainForm implements ApiJsonForm {
-
+public class AssignIdeaToBrainForm implements ApiJsonForm {
     private long id;
     private String username;
 
-    public IdeaBrainForm(long id, String username) {
+    public AssignIdeaToBrainForm(long id, String username) {
         this.id = id;
         this.username = username;
     }

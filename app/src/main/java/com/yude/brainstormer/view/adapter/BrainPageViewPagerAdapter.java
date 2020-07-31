@@ -6,26 +6,25 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.yude.brainstormer.R;
-import com.yude.brainstormer.view.fragment.BrainPageFragment;
-import com.yude.brainstormer.view.fragment.BrainToFollowFragment;
-import com.yude.brainstormer.view.fragment.IdeasFragment;
+import com.yude.brainstormer.view.fragment.MyBrainFriendsFragment;
+import com.yude.brainstormer.view.fragment.MyBrainIdeasFragment;
+import com.yude.brainstormer.view.fragment.BrainProfileFragment;
+import com.yude.brainstormer.view.fragment.MyTodoFragment;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class ViewPagerAdapter extends FragmentPagerAdapter {
+public class BrainPageViewPagerAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragments = new LinkedList<>();
-    private String[] titles = {"Ideas", "Brains", "Profile"};
-    private int[] images = {R.drawable.ic_book, R.drawable.ic_group, R.drawable.ic_account_circle};
 
-    public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
+    public BrainPageViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
 
-        fragments.add(new IdeasFragment());
-        fragments.add(new BrainToFollowFragment());
-        fragments.add(new BrainPageFragment());
+        fragments.add(new MyBrainIdeasFragment());
+        fragments.add(new MyTodoFragment());
+        fragments.add(new MyBrainFriendsFragment());
+        fragments.add(new BrainProfileFragment());
     }
 
     @NonNull
@@ -36,7 +35,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Nullable
@@ -46,8 +45,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return "Ideas";
             case 1:
-                return "Brains";
+                return "Todo";
             case 2:
+                return "Friends";
+            case 3:
                 return "Profile";
             default:
                 return "NA";

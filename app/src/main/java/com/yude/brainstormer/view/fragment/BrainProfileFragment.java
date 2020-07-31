@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.yude.brainstormer.HomeActivity;
+import com.yude.brainstormer.MainActivity;
 import com.yude.brainstormer.R;
 import com.yude.brainstormer.callback.api.ApiCallback;
 import com.yude.brainstormer.dao.DaoFactory;
@@ -38,7 +39,6 @@ public class BrainProfileFragment extends Fragment implements ApiCallback<Brain>
     private EditText firstNameET;
     private EditText lastNameET;
 
-    private SignOutCallback callback;
     private Context context;
     private DataDao dao;
 
@@ -51,7 +51,6 @@ public class BrainProfileFragment extends Fragment implements ApiCallback<Brain>
         super.onAttach(context);
         this.context = context;
         dao = DaoFactory.getDataDao();
-        callback = (SignOutCallback) context;
     }
 
     @Nullable
@@ -97,12 +96,21 @@ public class BrainProfileFragment extends Fragment implements ApiCallback<Brain>
         signoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                callback.signOutCallback();
+//                callback.signOutCallback();
+                signOutCallback();
             }
         });
     }
 
+    public void signOutCallback() {
+        Intent intent = new Intent();
+        intent.setClass(context, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    // region Interface callback
     @Override
     public void postResult(ResponseEntity<Brain> responseEntity) {
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
@@ -120,4 +128,5 @@ public class BrainProfileFragment extends Fragment implements ApiCallback<Brain>
             ).show();
         }
     }
+    // endregion
 }
